@@ -29,6 +29,14 @@
       text-align: left;
       display: inline-block;
     }
+    .green {
+      color: green;
+      font-weight: bold;
+    }
+    .yellow {
+      color: orange;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -86,12 +94,11 @@
         resultElement.textContent = `Congratulations! You guessed the number: ${secretNumber}`;
         resultElement.style.color = 'green';
       } else {
-        resultElement.textContent = `${correctPlace} digit(s) in the correct place, ${correctDigit} digit(s) correct but in the wrong place.`;
-        resultElement.style.color = 'black';
+        resultElement.innerHTML = `<span class="green">${correctPlace}</span> digit(s) in the correct place, <span class="yellow">${correctDigit}</span> digit(s) correct but in the wrong place.`;
       }
 
       const historyItem = document.createElement('li');
-      historyItem.textContent = `Attempt ${attemptNumber}: ${input} - ${correctPlace} correct place, ${correctDigit} wrong place`;
+      historyItem.innerHTML = `Attempt ${attemptNumber}: ${input} - <span class="green">${correctPlace}</span> correct place, <span class="yellow">${correctDigit}</span> wrong place`;
       historyList.appendChild(historyItem);
 
       document.getElementById('guessInput').value = '';
