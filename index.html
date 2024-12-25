@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guess the Number</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    input {
+      margin: 10px;
+      padding: 5px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    #history {
+      margin-top: 20px;
+      text-align: left;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Guess the Number!</h1>
+  <p>Try to guess the 4-digit number with all unique digits.</p>
+  <input type="text" id="guessInput" maxlength="4" placeholder="Enter 4 digits" />
+  <button onclick="checkGuess()">Guess</button>
+  <p id="result"></p>
+  <div id="history">
+    <h3>History:</h3>
+    <ul id="historyList"></ul>
+  </div>
+
+  <script>
+    // Generate a random 4-digit number with unique digits
+    function generateNumber() {
+      const digits = [];
+      while (digits.length < 4) {
+        const digit = Math.floor(Math.random() * 10);
+        if (!digits.includes(digit)) digits.push(digit);
+      }
+      return digits.join('');
+    }
+
+    const secretNumber = generateNumber();
+    console.log('Secret Number:', secretNumber); // For debugging
+
+    const historyList = document.getElementById('historyList');
+    let attemptNumber = 0;
+
+    function checkGuess() {
+      const input = document.getElementById('guessInput').value;
+      const resultElement = document.getElementById('result');
+
+      // Validate input
+      if (!/^[0-9]{4}$/.test(input) || new Set(input).size !== 4) {
+        resultElement.textContent = 'Please enter 4 unique digits.';
+        return;
+      }
+
+      let correctPlace = 0;
+      let correctDigit = 0;
+
+      for (let i = 0; i < 4; i++) {
+        if (input[i] === secretNumber[i]) {
+          correctPlace++;
+        } else if (secretNumber.includes(input[i])) {
+          correctDigit++;
+        }
+      }
+
+      attemptNumber++;
+
+      if (correctPlace === 4) {
+        resultElement.textContent = `Congratulations! You guessed the number: ${secretNumber}`;
+        resultElement.style.color = 'green';
+      } else {
+        resultElement.textContent = `${correctPlace} digit(s) in the correct place, ${correctDigit} digit(s) correct but in the wrong place.`;
+        resultElement.style.color = 'black';
+      }
+
+      const historyItem = document.createElement('li');
+      historyItem.textContent = `Attempt ${attemptNumber}: ${input} - ${correctPlace} correct place, ${correctDigit} wrong place`;
+      historyList.appendChild(historyItem);
+
+      document.getElementById('guessInput').value = '';
+    }
+
+    document.getElementById('guessInput').addEventListener('keyup', function(event) {
+      if (event.key === 'Enter') {
+        checkGuess();
+      }
+    });
+  </script>
+</body>
+</html>
