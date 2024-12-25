@@ -43,7 +43,7 @@
   <h1>Guess the Number!</h1>
   <p>Try to guess the 4-digit number with all unique digits.</p>
   <input type="text" id="guessInput" maxlength="4" placeholder="Enter 4 digits" />
-  <button onclick="checkGuess()">Guess</button>
+  <button id="guessButton" onclick="checkGuess()">Guess</button>
   <p id="result"></p>
   <div id="history">
     <h3>History:</h3>
@@ -67,9 +67,15 @@
     const historyList = document.getElementById('historyList');
     let attemptNumber = 0;
 
+    const guessInput = document.getElementById('guessInput');
+    const guessButton = document.getElementById('guessButton');
+    const resultElement = document.getElementById('result');
+
+    // Focus input field when page loads
+    guessInput.focus();
+
     function checkGuess() {
-      const input = document.getElementById('guessInput').value;
-      const resultElement = document.getElementById('result');
+      const input = guessInput.value;
 
       // Validate input
       if (!/^[0-9]{4}$/.test(input) || new Set(input).size !== 4) {
@@ -93,6 +99,12 @@
       if (correctPlace === 4) {
         resultElement.textContent = `Congratulations! You guessed the number: ${secretNumber}`;
         resultElement.style.color = 'green';
+
+        // Hide input and change button to restart
+        guessInput.style.display = 'none';
+        guessButton.textContent = 'New Game';
+        guessButton.focus();
+        guessButton.onclick = () => location.reload();
       } else {
         resultElement.innerHTML = `<span class="green">${correctPlace}</span> digit(s) in the correct place, <span class="yellow">${correctDigit}</span> digit(s) correct but in the wrong place.`;
       }
@@ -101,10 +113,11 @@
       historyItem.innerHTML = `Attempt ${attemptNumber}: ${input} - <span class="green">${correctPlace}</span> correct place, <span class="yellow">${correctDigit}</span> wrong place`;
       historyList.appendChild(historyItem);
 
-      document.getElementById('guessInput').value = '';
+      guessInput.value = '';
+      guessInput.focus();
     }
 
-    document.getElementById('guessInput').addEventListener('keyup', function(event) {
+    guessInput.addEventListener('keyup', function(event) {
       if (event.key === 'Enter') {
         checkGuess();
       }
